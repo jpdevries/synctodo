@@ -17,22 +17,15 @@ ReactDOM = require('react-dom/server'),
 //actions = require('./_build/js/model/actions'),
 app = express();
 
+
 app.post('/', function(req, res){
   console.log('POST');
   var form = new formidable.IncomingForm();
 
   form.parse(req, function(err, fields, files){
-    console.log(fields);
     new Promise(function(resolve, reject){
       if(!fields['new-item']) { // update tasks
-        var completed = (function(){
-          var a = [];
-          for(var prop in fields) {
-            var p = prop.split('_');
-            if(p[0] == 'item') a.push(parseInt(p[1]));
-          }
-          return a;
-        })();
+        var completed = getCompletedTaskIds(fields);
         updateTaskStatus(completed,true).then(function(results){
           resolve(results);
         },function(err){});
@@ -64,6 +57,23 @@ app.get('/', function(req, res){
     });
   },function(err){
 
+  });
+});
+
+app.post(endpoints.DELETE_COMPLETED_TASKS, function(req, res){
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files){
+    var ids = getCompletedTaskIds(fields);
+    deleteTasks(ids).then(function(tasks){
+      console.log(tasks);
+      res.render('deletedtasks.twig',{
+        tasks:tasks,
+        endpoints:endpoints
+      });
+    },function(err){
+
+    });
   });
 });
 
@@ -188,6 +198,52 @@ function updateTaskStatus(ids,uncompleteMissing = true) {
       });
     });
   });
+}
+
+function deleteTasks(ids) {
+  ids = ids.join(',');
+
+  return new Promise(function(resolve, reject){
+    var client = new pg.Client();
+
+    // connect to our database
+    client.connect(function (err) {
+      if (err) reject(err);
+
+      var query = `
+      WITH "delete_tasks" AS (
+        DELETE FROM "synctodo" WHERE id IN (${ids})
+        RETURNING *
+      )
+      SELECT * FROM "delete_tasks" ORDER BY id;
+      `;
+
+      // execute a query on our database
+      client.query(query, function (err, result) {
+        //console.log(result);
+        if (err) reject(err);
+
+        // disconnect the client
+        client.end(function (err) {
+          if (err) reject(err);
+        });
+
+        resolve(result.rows);
+      });
+    });
+  });
+}
+
+/**
+ * Provided field properties, returns an array of ids of completed tasks
+*/
+function getCompletedTaskIds(fields) {
+  var a = [];
+  for(var prop in fields) {
+    var p = prop.split('_');
+    if(p[0] == 'item') a.push(parseInt(p[1]));
+  }
+  return a;
 }
 
 app.listen(process.env.PORT || 1187);

@@ -1,53 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Todo List</title>
-  <style media="screen">
-  * {
-    box-sizing:border-box;
-  }
-    body {
-      background:rgb(245,245,245);
-      padding:2em 0;
-    }
-    label[for="new-item"] {
-      display:block;
-    }
-    .balanced {
-      text-align:center;
-    }
-    #task-list {
-      margin-top:0;
-      margin-bottom:1rem;
-    }
-    #todo {
-      margin:0 auto;
-      text-align:left;
-      max-width:24em;
-      background:white;
-      padding:1em;
-      border:1px solid rgb(230,230,230);
-    }
-    .new-item__bar {
-      display:flex;
-      margin:1em 0;
-    }
-    #new-item {
-      flex:1 0 auto;
-      margin-right:1em;
-    }
-    #todo footer {
-      text-align:center;
-    }
-  </style>
-</head>
+{% include 'header.twig' %}
 <body>
   <main id="task-list" class="shell shell-task-list">
     <div class="balanced">
       <form action="{{ endpoints.UPDATE_TASKS|default('/') }}" method="post" id="todo" action="#" method="post" class="box">
         <header class="add-item">
-          <h1 id="task-list">Todo List</h1>
+          <h1 id="task-list"><a href="/" class="subtle">Todo List</a></h1>
           <label for="new-item">Add a New Task</label>
           <div class="new-item__bar">
             <input required type="text" id="new-item" name="new-item" placeholder="Item Title&hellip;" />
@@ -65,8 +22,15 @@
           {% endfor %}
         </ol>
         <footer>
-          <button type="reset">Reset</button>
-          <button type="submit">Save</button>
+          <div>
+            <button type="reset">Reset</button>
+            <button type="submit">Save</button>
+          </div>
+          {% if tasks|length > 0 %}
+          <div class="delete-tasks">
+            <button type="submit" formaction="{{ endpoints.DELETE_COMPLETED_TASKS|default('/delete/completed/tasks/') }}">Delete Completed Tasks</button>
+          </div>
+          {% endif %}
         </footer>
         </form>
     </div>
