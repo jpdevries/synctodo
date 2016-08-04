@@ -36,7 +36,6 @@ app.post('/', function(req, res){
       }
     }).then(function(results){
       getTasks().then(function(tasks){
-        console.log(tasks);
         res.render('index.twig',{
           tasks:tasks,
           endpoints:endpoints
@@ -44,13 +43,12 @@ app.post('/', function(req, res){
       },function(err){
 
       });
-    },function(e){});
+    },function(err){});
   });
 });
 
 app.get('/', function(req, res){
   getTasks().then(function(tasks){
-    console.log(tasks);
     res.render('index.twig',{
       tasks:tasks,
       endpoints:endpoints
@@ -66,7 +64,6 @@ app.post(endpoints.DELETE_COMPLETED_TASKS, function(req, res){
   form.parse(req, function(err, fields, files){
     var ids = getCompletedTaskIds(fields);
     deleteTasks(ids).then(function(tasks){
-      console.log(tasks);
       res.render('deletedtasks.twig',{
         tasks:tasks,
         endpoints:endpoints
@@ -139,8 +136,6 @@ function addTask(title, completed) {
           if (err) reject(err);
         });
 
-        console.log(result.rows);
-
         resolve(result.rows);
       });
     });
@@ -149,7 +144,7 @@ function addTask(title, completed) {
 
 /**
  * Update status of multiple tasks
- * @param {array} ids - ids of tasks to mark as completed.
+ * @param {Array} ids - ids of tasks to mark as completed.
  * @param {boolean} uncompleteMissing - If true, marks any tasks not present in ids as uncomplete.
  */
 function updateTaskStatus(ids,uncompleteMissing = true) {
@@ -191,8 +186,6 @@ function updateTaskStatus(ids,uncompleteMissing = true) {
         client.end(function (err) {
           if (err) reject(err);
         });
-
-        console.log(result.rows);
 
         resolve(result.rows);
       });
@@ -236,6 +229,8 @@ function deleteTasks(ids) {
 
 /**
  * Provided field properties, returns an array of ids of completed tasks
+ * @param {Array} fields - Object of field properties containing task items
+ * @returns {Array}
 */
 function getCompletedTaskIds(fields) {
   var a = [];
