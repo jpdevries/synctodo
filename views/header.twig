@@ -3,49 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Todo List</title>
-  <style media="screen">
-  * {
-    box-sizing:border-box;
-  }
-    body {
-      background:rgb(245,245,245);
-      padding:2em 0;
-    }
-    label[for="new-item"] {
-      display:block;
-    }
-    .balanced {
-      text-align:center;
-    }
-    #task-list {
-      margin-top:0;
-      margin-bottom:1rem;
-    }
-    #todo {
-      margin:0 auto;
-      text-align:left;
-      max-width:24em;
-      background:white;
-      padding:1em;
-      border:1px solid rgb(230,230,230);
-    }
-    .new-item__bar {
-      display:flex;
-      margin:1em 0;
-    }
-    #new-item {
-      flex:1 0 auto;
-      margin-right:1em;
-    }
-    #todo footer {
-      text-align:center;
-    }
-    .delete-tasks {
-      margin-top:1em;
-    }
-    a.subtle {
-      color:currentColor;
-      text-decoration:none;
-    }
-  </style>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="{{ base|default('/') }}" />
+
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>

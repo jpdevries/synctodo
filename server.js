@@ -241,6 +241,8 @@ function getCompletedTaskIds(fields) {
   return a;
 }
 
+app.use(express.static(__dirname));
+
 app.listen(process.env.PORT || 1187);
 
 console.log("server listening on " + (process.env.PORT || 1187));
