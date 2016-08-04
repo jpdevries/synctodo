@@ -136,14 +136,14 @@ function addTask(title, completed) {
       var query = `
       WITH "add_task" AS (
       INSERT INTO "tasks" (title,completed)
-        VALUES('${title}',${completed})
+        VALUES($1,$2)
       RETURNING *
       )
       SELECT * FROM "add_task" ORDER BY id;
       `;
 
       // execute a query on our database
-      client.query(query, function (err, result) {
+      client.query(query, [title,completed], function (err, result) {
         //console.log(result);
         if (err) reject(err);
 
@@ -185,7 +185,7 @@ function updateTaskCompletedStatus(ids,uncompleteMissing = false) {
 
       var query = `
       WITH "update_task" AS (
-        UPDATE "tasks" SET completed = ${completed}${where}
+        UPDATE "tasks" SET completed = ${completed} ${where}
         RETURNING *
       )${uncomplete}
       SELECT * FROM "update_task";
