@@ -26,7 +26,7 @@ app.post('/', function(req, res){
     new Promise(function(resolve, reject){
       if(!fields['new-item']) { // update tasks
         var completed = getCompletedTaskIds(fields);
-        updateTaskStatus(completed,true).then(function(results){
+        updateTaskCompletedStatus(completed,true).then(function(results){
           resolve(results);
         },function(err){});
       } else { // add task
@@ -74,11 +74,27 @@ app.post(endpoints.DELETE_COMPLETED_TASKS, function(req, res){
   });
 });
 
+app.post(endpoints.ARCHIVE_COMPLETED_TASKS, function(req, res){
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files){
+    var ids = getCompletedTaskIds(fields);
+    archiveTasks(ids).then(function(tasks){
+      res.render('archivedtasks.twig',{
+        tasks:tasks,
+        endpoints:endpoints
+      });
+    },function(err){
+
+    });
+  });
+});
+
 
 /**
  * Resolves a promise with all tasks as rows
 */
-function getTasks() {
+function getTasks(where = 'WHERE archived = 0') {
   return new Promise(function(resolve, reject){
     var client = new pg.Client();
 
@@ -87,7 +103,7 @@ function getTasks() {
       if (err) reject(err);
 
       // execute a query on our database
-      client.query('SELECT * FROM "tasks" ORDER BY id;', function (err, result) {
+      client.query(`SELECT * FROM "tasks" ${where} ORDER BY id;`, function (err, result) {
         //console.log(result);
         if (err) reject(err);
 
@@ -147,7 +163,7 @@ function addTask(title, completed) {
  * @param {Array} ids - ids of tasks to mark as completed.
  * @param {boolean} uncompleteMissing - If true, marks any tasks not present in ids as uncomplete.
  */
-function updateTaskStatus(ids,uncompleteMissing = true) {
+function updateTaskCompletedStatus(ids,uncompleteMissing = false) {
   var completed = (ids.length) ? 1 : 0;
   uncompleteMissing = (ids.length) ? uncompleteMissing : false;
   var where = (ids.length) ? ` WHERE id IN (${ids})` : '';
@@ -175,6 +191,55 @@ function updateTaskStatus(ids,uncompleteMissing = true) {
       SELECT * FROM "update_task";
 
       SELECT * FROM "tasks" ORDER BY id;
+      `;
+
+      // execute a query on our database
+      client.query(query, function (err, result) {
+        //console.log(result);
+        if (err) reject(err);
+
+        // disconnect the client
+        client.end(function (err) {
+          if (err) reject(err);
+        });
+
+        resolve(result.rows);
+      });
+    });
+  });
+}
+
+/**
+ * Updates the archived status of several tasks
+ * @param {Array} ids - ids of tasks to mark as archived.
+ * @param {boolean} uncompleteMissing - If true, marks any tasks not present in ids as not archived.
+ */
+function archiveTasks(ids,unarchiveMissing = false) {
+  var completed = (ids.length) ? 1 : 0;
+  unarchiveMissing = (ids.length) ? unarchiveMissing : false;
+  var where = (ids.length) ? ` WHERE id IN (${ids})` : '';
+  ids = ids.join(',');
+
+  return new Promise(function(resolve, reject){
+    var client = new pg.Client();
+
+    // connect to our database
+    client.connect(function (err) {
+      if (err) reject(err);
+
+      var unarchive = (unarchiveMissing) ? `
+      , "unarchive" as (
+        UPDATE "tasks" SET archived = 0 WHERE id NOT IN (${ids})
+        RETURNING *
+      )
+      ` : '';
+
+      var query = `
+      WITH "archive_task" AS (
+        UPDATE "tasks" SET archived = ${completed}${where}
+        RETURNING *
+      )${unarchive}
+      SELECT * FROM "archive_task";
       `;
 
       // execute a query on our database

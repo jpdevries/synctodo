@@ -1,0 +1,31 @@
+{% include 'header.twig' %}
+<body>
+  <main id="task-list" class="shell shell-task-list">
+    <div class="balanced">
+      <div id="todo">
+        <header class="add-item">
+          <h1 id="task-list"><a href="/" class="subtle">Todo List</a></h1>
+        </header>
+        <hr>
+        <p>
+          The following completed tasks have been archived.
+        </p>
+        <ol class="naked">
+          {% for task in tasks %}
+          <li>
+            <label for="item_{{ task.id }}">
+              <input disabled id="item_{{ task.id }}" name="item_{{ task.id }}" type="checkbox" checked>&nbsp;{{ task.title }}
+            </label>
+          </li>
+          {% endfor %}
+        </ol>
+        <footer>
+          <div>
+            <a href="/" class="btn">Return to Task Manager.</a>
+          </div>
+        </footer>
+      </div>
+      </div>
+  </main>
+</body>
+</html>

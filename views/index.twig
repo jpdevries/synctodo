@@ -7,10 +7,11 @@
           <h1 id="task-list"><a href="/" class="subtle">Todo List</a></h1>
           <label for="new-item">Add a New Task</label>
           <div class="new-item__bar">
-            <input required autocomplete="off" autofocus type="text" id="new-item" name="new-item" placeholder="Item Title&hellip;" />
+            <input required autocomplete="off" autofocus type="text" id="new-item" name="new-item" placeholder="Your new task&hellip;" />
             <button type="submit" formaction="{{ endpoints.ADD_TASK|default('/') }}" formmethod="post">Add Task</button>
           </div>
         </header>
+        {% if tasks|length > 0 %}
         <hr>
         <ol class="naked">
           {% for task in tasks %}
@@ -26,13 +27,15 @@
             <button type="reset">Reset</button>
             <button type="submit">Save</button>
           </div>
-          {% if tasks|length > 0 %}
-          <div class="delete-tasks">
+          <div class="task-bar">
+            <button type="submit" formaction="{{ endpoints.ARCHIVE_COMPLETED_TASKS|default('/archive/completed/tasks/') }}">Archive Completed Tasks</button>
+          </div>
+          <div class="task-bar">
             <button type="submit" formaction="{{ endpoints.DELETE_COMPLETED_TASKS|default('/delete/completed/tasks/') }}">Delete Completed Tasks</button>
           </div>
-          {% endif %}
         </footer>
         </form>
+        {% endif %}
     </div>
   </main>
 </body>

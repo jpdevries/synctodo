@@ -139,6 +139,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-webpack');
   grunt.loadNpmTasks('grunt-postcss');
 
+  grunt.registerTask('default',['growl:watch','watch']);
   grunt.registerTask('build',['bower','copy','sass','postcss','growl:build']);
   //grunt.registerTask('build',['bower','copy','webpack','uglify','sass','postcss','growl:build']);
 };
