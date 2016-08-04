@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS "synctodo";
+DROP TABLE IF EXISTS "tasks";
 
 DROP SEQUENCE IF EXISTS todo_id_sequence;
 
@@ -7,16 +7,16 @@ CREATE SEQUENCE todo_id_sequence
   minvalue 1
   increment 1;
 
-CREATE TABLE "synctodo"(
+CREATE TABLE "tasks"(
   id SERIAL PRIMARY KEY,
   title varchar(255) NOT NULL DEFAULT '',
   completed smallint NOT NULL DEFAULT '0'
 );
 
-INSERT INTO "synctodo" (title,completed)
+INSERT INTO "tasks" (title,completed)
   VALUES('Eat Bacon',1);
 
-INSERT INTO "synctodo" (title,completed)
+INSERT INTO "tasks" (title,completed)
   VALUES('Eat More Bacon',0);
 
-SELECT * FROM "synctodo" ORDER BY id;
+SELECT * FROM "tasks" ORDER BY id;

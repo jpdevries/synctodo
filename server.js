@@ -87,7 +87,7 @@ function getTasks() {
       if (err) reject(err);
 
       // execute a query on our database
-      client.query('SELECT * FROM "synctodo" ORDER BY id;', function (err, result) {
+      client.query('SELECT * FROM "tasks" ORDER BY id;', function (err, result) {
         //console.log(result);
         if (err) reject(err);
 
@@ -119,7 +119,7 @@ function addTask(title, completed) {
 
       var query = `
       WITH "add_task" AS (
-      INSERT INTO "synctodo" (title,completed)
+      INSERT INTO "tasks" (title,completed)
         VALUES('${title}',${completed})
       RETURNING *
       )
@@ -162,19 +162,19 @@ function updateTaskStatus(ids,uncompleteMissing = true) {
 
       var uncomplete = (uncompleteMissing) ? `
       , "uncomplete" as (
-        UPDATE "synctodo" SET completed = 0 WHERE id NOT IN (${ids})
+        UPDATE "tasks" SET completed = 0 WHERE id NOT IN (${ids})
         RETURNING *
       )
       ` : '';
 
       var query = `
       WITH "update_task" AS (
-        UPDATE "synctodo" SET completed = ${completed}${where}
+        UPDATE "tasks" SET completed = ${completed}${where}
         RETURNING *
       )${uncomplete}
       SELECT * FROM "update_task";
 
-      SELECT * FROM "synctodo" ORDER BY id;
+      SELECT * FROM "tasks" ORDER BY id;
       `;
 
       // execute a query on our database
@@ -205,7 +205,7 @@ function deleteTasks(ids) {
 
       var query = `
       WITH "delete_tasks" AS (
-        DELETE FROM "synctodo" WHERE id IN (${ids})
+        DELETE FROM "tasks" WHERE id IN (${ids})
         RETURNING *
       )
       SELECT * FROM "delete_tasks" ORDER BY id;
