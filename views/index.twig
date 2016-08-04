@@ -7,7 +7,7 @@
           <h1 id="task-list"><a href="/" class="subtle">Todo List</a></h1>
           <label for="new-item">Add a New Task</label>
           <div class="new-item__bar">
-            <input required type="text" id="new-item" name="new-item" placeholder="Item Title&hellip;" />
+            <input required autocomplete="off" autofocus type="text" id="new-item" name="new-item" placeholder="Item Title&hellip;" />
             <button type="submit" formaction="{{ endpoints.ADD_TASK|default('/') }}" formmethod="post">Add Task</button>
           </div>
         </header>
