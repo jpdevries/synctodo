@@ -7,7 +7,4 @@ CREATE TABLE "tasks"(
   archived smallint NOT NULL DEFAULT '0'
 );
 
-INSERT INTO "tasks" (title,completed)
-  VALUES('Eat Bacon',1);
-
 SELECT * FROM "tasks" ORDER BY id;

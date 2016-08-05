@@ -4,7 +4,12 @@
 
 body {
   background:rgb(245,245,245);
-  padding:2em 0;
+  margin:0;
+  padding:.5em;
+
+  @include media($gtMobile) {
+    padding:2em;
+  }
 }
 .accessibly-hidden {
   @extend %accessibly-hidden;

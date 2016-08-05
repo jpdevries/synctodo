@@ -18,6 +18,38 @@ ReactDOM = require('react-dom/server'),
 app = express();
 
 
+                            /*
+                           /\ \__
+  ___   _ __    __     __  \ \ ,_\    __
+ /'___\/\`'__\/'__`\ /'__`\ \ \ \/  /'__`\
+/\ \__/\ \ \//\  __//\ \L\.\_\ \ \_/\  __/
+\ \____\\ \_\\ \____\ \__/.\_\\ \__\ \____\
+ \/____/ \/_/ \/____/\/__/\/_/ \/__/\/___*/
+
+app.get('/', function(req, res){
+  getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
+    return (tasks)
+  }).then(function(archivedTasks){
+    getTasks().then(function(tasks){
+      res.render('index.twig',{
+        tasks:tasks,
+        endpoints:endpoints,
+        showArchiveLink:archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
+      });
+    },function(err){});
+  })
+});
+
+                   /*            __
+                  /\ \          /\ \__
+ __  __  _____    \_\ \     __  \ \ ,_\    __
+/\ \/\ \/\ '__`\  /'_` \  /'__`\ \ \ \/  /'__`\
+\ \ \_\ \ \ \L\ \/\ \L\ \/\ \L\.\_\ \ \_/\  __/
+ \ \____/\ \ ,__/\ \___,_\ \__/.\_\\ \__\ \____\
+  \/___/  \ \ \/  \/__,_ /\/__/\/_/ \/__/\/____/
+           \ \_\
+            \/*/
+
 app.post('/', function(req, res){
   console.log('POST');
   var form = new formidable.IncomingForm();
@@ -58,28 +90,18 @@ app.post('/', function(req, res){
           endpoints:endpoints,
           showArchiveLink:data.archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
         });
-      },function(err){
-
-      });
+      },function(err){});
     },function(err){});
   });
 });
 
-app.get('/', function(req, res){
-  getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
-    return (tasks)
-  }).then(function(archivedTasks){
-    getTasks().then(function(tasks){
-      res.render('index.twig',{
-        tasks:tasks,
-        endpoints:endpoints,
-        showArchiveLink:archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
-      });
-    },function(err){
-
-    });
-  })
-});
+  /*          ___           __
+ /\ \        /\_ \         /\ \__
+ \_\ \     __\//\ \      __\ \ ,_\    __
+ /'_` \  /'__`\\ \ \   /'__`\ \ \/  /'__`\
+/\ \L\ \/\  __/ \_\ \_/\  __/\ \ \_/\  __/
+\ \___,_\ \____\/\____\ \____\\ \__\ \____\
+ \/__,_ /\/____/\/____/\/____/ \/__/\/___*/
 
 app.post(endpoints.DELETE_TASKS, function(req, res){
   var form = new formidable.IncomingForm();
@@ -91,11 +113,17 @@ app.post(endpoints.DELETE_TASKS, function(req, res){
         tasks:tasks,
         endpoints:endpoints
       });
-    },function(err){
-
-    });
+    },function(err){});
   });
 });
+
+                     /*
+                    /\ \      __
+   __     _ __   ___\ \ \___ /\_\  __  __     __
+ /'__`\  /\`'__\/'___\ \  _ `\/\ \/\ \/\ \  /'__`\
+/\ \L\.\_\ \ \//\ \__/\ \ \ \ \ \ \ \ \_/ |/\  __/
+\ \__/.\_\\ \_\\ \____\\ \_\ \_\ \_\ \___/ \ \____\
+ \/__/\/_/ \/_/ \/____/ \/_/\/_/\/_/\/__/   \/___*/
 
 app.post(endpoints.ARCHIVE_COMPLETED_TASKS, function(req, res){
   var form = new formidable.IncomingForm();
@@ -109,9 +137,7 @@ app.post(endpoints.ARCHIVE_COMPLETED_TASKS, function(req, res){
         viewAllArchivedTasks:true,
         showReset:false
       });
-    },function(err){
-
-    });
+    },function(err){});
   });
 });
 
@@ -122,14 +148,22 @@ app.get(endpoints.ARCHIVED_TASKS, function(req, res){
       endpoints:endpoints,
       reset:'Select All'
     });
-  },function(err){
-
-  });
+  },function(err){});
 });
 
+ /*              ___
+/\ \            /\_ \
+\ \ \___      __\//\ \    _____      __   _ __   ____
+ \ \  _ `\  /'__`\\ \ \  /\ '__`\  /'__`\/\`'__\/',__\
+  \ \ \ \ \/\  __/ \_\ \_\ \ \L\ \/\  __/\ \ \//\__, `\
+   \ \_\ \_\ \____\/\____\\ \ ,__/\ \____\\ \_\\/\____/
+    \/_/\/_/\/____/\/____/ \ \ \/  \/____/ \/_/ \/___/
+                            \ \_\
+                             \/*/
 
 /**
  * Resolves a promise with all tasks as rows
+* @param {string} where - Optional where query such as 'WHERE archived = 0'
 */
 function getTasks(where = 'WHERE archived = 0') {
   return new Promise(function(resolve, reject){
@@ -343,6 +377,14 @@ function getCompletedTaskIds(fields) {
   }
   return a;
 }
+
+       /*             __
+      /\ \__         /\ \__  __
+  ____\ \ ,_\    __  \ \ ,_\/\_\    ___         ____     __   _ __   __  __     __   _ __
+ /',__\\ \ \/  /'__`\ \ \ \/\/\ \  /'___\      /',__\  /'__`\/\`'__\/\ \/\ \  /'__`\/\`'__\
+/\__, `\\ \ \_/\ \L\.\_\ \ \_\ \ \/\ \__/     /\__, `\/\  __/\ \ \/ \ \ \_/ |/\  __/\ \ \/
+\/\____/ \ \__\ \__/.\_\\ \__\\ \_\ \____\    \/\____/\ \____\\ \_\  \ \___/ \ \____\\ \_\
+ \/___/   \/__/\/__/\/_/ \/__/ \/_/\/____/     \/___/  \/____/ \/_/   \/__/   \/____/ \/*/
 
 app.use(express.static(__dirname));
 

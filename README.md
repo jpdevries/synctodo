@@ -62,9 +62,15 @@ cd synctodo
 npm install
 ```
 
-You should now be able to run the Node&nbsp;server!
+You should now be able to build the files and run the Node&nbsp;server!
 ```bash
+grunt build
 npm run serve
+```
+
+The server will automatically restart when changes are made. To watch the Sass source files for changes and automatically rebuild the source files, run the `grunt` command:
+```bash
+grunt #alias for grunt watch
 ```
 
 By default this project runs on port 1187. To run it on a different port use the `PORT` environmental variable:
@@ -76,4 +82,42 @@ To use a database with a different name use the `PGDATABASE` environmental&nbsp;
 
 ```bash
 PGDATABASE=anotherdb npm run serve
+```
+
+## Features
+### Add New Tasks
+Homepage at `/`
+
+![](http://j4p.us/1l1G471R453z/Screen%20Shot%202016-08-06%20at%201.13.46%20AM.png)
+
+### Complete Tasks
+Synchronously posts to `/`
+
+![](http://j4p.us/3K3C3R1o3a1b/Screen%20Shot%202016-08-06%20at%201.14.11%20AM.png)
+
+### Archive Tasks
+Synchronously posts to `/archive/`
+
+![](http://j4p.us/162W063Y3i0K/Screen%20Shot%202016-08-06%20at%201.14.23%20AM.png)
+
+### Unarchive Tasks
+Synchronously posts to `/`
+
+![](http://j4p.us/1o0S0F3I1X0r/Screen%20Shot%202016-08-06%20at%201.14.39%20AM.png)
+
+### Delete Tasks
+Synchronously posts to `/delete/tasks/`
+
+![](http://j4p.us/0P2C3h2n070H/Screen%20Shot%202016-08-06%20at%201.14.55%20AM.png)
+
+## Database
+A simple PostgreSQL database schema is used to store our tasks. See `server.js` for the queries that interact with the database to add, complete, archive, unarchive, and delete&nbsp;tasks.
+
+```sql
+CREATE TABLE "tasks" (
+  id SERIAL PRIMARY KEY,
+  title varchar(255) NOT NULL DEFAULT '',
+  completed smallint NOT NULL DEFAULT '0',
+  archived smallint NOT NULL DEFAULT '0'
+);
 ```
