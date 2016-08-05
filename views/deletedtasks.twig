@@ -1,4 +1,6 @@
-{% include 'header.twig' %}
+{% include 'header.twig' with {
+  title:'Deleted Tasks'
+} %}
 <body>
   <main id="task-list" class="shell shell-task-list">
     <div class="balanced">
@@ -8,7 +10,7 @@
         </header>
         <hr>
         <p>
-          The following completed tasks have been deleted. This is&nbsp;irreversible. 
+          The following completed tasks have been deleted. This is&nbsp;irreversible.
         </p>
         <ol class="naked">
           {% for task in tasks %}

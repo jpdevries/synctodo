@@ -23,22 +23,40 @@ app.post('/', function(req, res){
   var form = new formidable.IncomingForm();
 
   form.parse(req, function(err, fields, files){
+    console.log(fields);
+    var unarchiveSelected = fields.unarchiveselected == '1' ? true : false;
     new Promise(function(resolve, reject){
       if(!fields['new-item']) { // update tasks
         var completed = getCompletedTaskIds(fields);
-        updateTaskCompletedStatus(completed,true).then(function(results){
-          resolve(results);
-        },function(err){});
+        if(!unarchiveSelected) {
+          updateTaskCompletedStatus(completed,true).then(function(results){
+            resolve(results);
+          },function(err){});
+        } else {
+          archiveTasks(completed,false,true).then(function(results){
+            resolve(results);
+          },function(err){});
+        }
       } else { // add task
         addTask(fields['new-item'],false).then(function(results){
           resolve(results);
         },function(err){});
       }
     }).then(function(results){
+      return new Promise(function(resolve, reject){
+        getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
+          resolve({
+            results:results,
+            archivedTasks:tasks
+          })
+        })
+      })
+    }).then(function(data){
       getTasks().then(function(tasks){
         res.render('index.twig',{
           tasks:tasks,
-          endpoints:endpoints
+          endpoints:endpoints,
+          showArchiveLink:data.archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
         });
       },function(err){
 
@@ -48,17 +66,22 @@ app.post('/', function(req, res){
 });
 
 app.get('/', function(req, res){
-  getTasks().then(function(tasks){
-    res.render('index.twig',{
-      tasks:tasks,
-      endpoints:endpoints
-    });
-  },function(err){
+  getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
+    return (tasks)
+  }).then(function(archivedTasks){
+    getTasks().then(function(tasks){
+      res.render('index.twig',{
+        tasks:tasks,
+        endpoints:endpoints,
+        showArchiveLink:archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
+      });
+    },function(err){
 
-  });
+    });
+  })
 });
 
-app.post(endpoints.DELETE_COMPLETED_TASKS, function(req, res){
+app.post(endpoints.DELETE_TASKS, function(req, res){
   var form = new formidable.IncomingForm();
 
   form.parse(req, function(err, fields, files){
@@ -82,11 +105,25 @@ app.post(endpoints.ARCHIVE_COMPLETED_TASKS, function(req, res){
     archiveTasks(ids).then(function(tasks){
       res.render('archivedtasks.twig',{
         tasks:tasks,
-        endpoints:endpoints
+        endpoints:endpoints,
+        viewAllArchivedTasks:true,
+        showReset:false
       });
     },function(err){
 
     });
+  });
+});
+
+app.get(endpoints.ARCHIVED_TASKS, function(req, res){
+  getTasks('WHERE archived = 1').then(function(tasks){
+    res.render('archivedtasks.twig',{
+      tasks:tasks,
+      endpoints:endpoints,
+      reset:'Select All'
+    });
+  },function(err){
+
   });
 });
 
@@ -213,9 +250,10 @@ function updateTaskCompletedStatus(ids,uncompleteMissing = false) {
  * Updates the archived status of several tasks
  * @param {Array} ids - ids of tasks to mark as archived.
  * @param {boolean} uncompleteMissing - If true, marks any tasks not present in ids as not archived.
+ * @param {boolean} forceUnarchive - If true, forces selected  tasks to be unarchived
  */
-function archiveTasks(ids,unarchiveMissing = false) {
-  var completed = (ids.length) ? 1 : 0;
+function archiveTasks(ids,unarchiveMissing = false, forceUnarchive = false) {
+  var archived = (ids.length && !forceUnarchive) ? 1 : 0;
   unarchiveMissing = (ids.length) ? unarchiveMissing : false;
   var where = (ids.length) ? ` WHERE id IN (${ids})` : '';
   ids = ids.join(',');
@@ -236,7 +274,7 @@ function archiveTasks(ids,unarchiveMissing = false) {
 
       var query = `
       WITH "archive_task" AS (
-        UPDATE "tasks" SET archived = ${completed}${where}
+        UPDATE "tasks" SET archived = ${archived}${where}
         RETURNING *
       )${unarchive}
       SELECT * FROM "archive_task";
