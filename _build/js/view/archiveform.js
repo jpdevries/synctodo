@@ -45,6 +45,8 @@ class ArchiveForm extends ToDoForm {
     completedTaskIds = this.getCompletedTaskIds(completedTasks),
     uncompletedTaskIds = this.getUncompletedTaskIds(uncompletedTasks);
 
+    this.updatePageTitle(tasks);
+
     var tasksExist = tasks.length ? (
       <p>
         The following completed { (tasks.length > 1) ? 'tasks have' : 'task has' } been archived.

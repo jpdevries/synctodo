@@ -6,7 +6,7 @@ Progressively Enhanced React Todo List. HTML&ndash;first, Node, Express,&nbsp;Po
 ## Preview
 Have a look at the synchronous and asynchronous endpoints in&nbsp;action.  
 
-![](http://j4p.us/0x3G2i0P2l2E/todolist.gif)
+![](http://j4p.us/3L3k0i450J3k/todolist.gif)
 
 ## What you need
 

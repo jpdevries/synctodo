@@ -1837,6 +1837,16 @@
 	      });
 	    }
 	  }, {
+	    key: 'updatePageTitle',
+	    value: function updatePageTitle() {
+	      var uncompletedTasks = arguments.length <= 0 || arguments[0] === undefined ? undefined : arguments[0];
+
+	      if (helpers.serverSideRendering) return;
+
+	      var title = document.querySelector('head title');
+	      title.innerHTML = title.getAttribute('data-base') + (uncompletedTasks ? '(' + uncompletedTasks.length.toString() + ')' : '');
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
@@ -1856,6 +1866,8 @@
 	          uncompletedTasks = this.getUncompletedTasks(),
 	          completedTaskIds = this.getCompletedTaskIds(completedTasks),
 	          uncompletedTaskIds = this.getUncompletedTaskIds(uncompletedTasks);
+
+	      this.updatePageTitle(uncompletedTasks);
 
 	      var tasksExist = tasks.length ? React.createElement(
 	        'div',
@@ -2193,6 +2205,8 @@
 	          uncompletedTasks = this.getUncompletedTasks(),
 	          completedTaskIds = this.getCompletedTaskIds(completedTasks),
 	          uncompletedTaskIds = this.getUncompletedTaskIds(uncompletedTasks);
+
+	      this.updatePageTitle(tasks);
 
 	      var tasksExist = tasks.length ? React.createElement(
 	        'p',

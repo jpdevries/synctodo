@@ -66,6 +66,13 @@ class ToDoForm extends React.Component {
     ))
   }
 
+  updatePageTitle(uncompletedTasks = undefined) {
+    if(helpers.serverSideRendering) return;
+
+    let title = document.querySelector('head title');
+    title.innerHTML = title.getAttribute('data-base') + (uncompletedTasks ? `(${ uncompletedTasks.length.toString() })` : '');
+  }
+
   render(){
     var props = this.props,
     tasks = props.tasks,
@@ -82,6 +89,8 @@ class ToDoForm extends React.Component {
     uncompletedTasks = this.getUncompletedTasks(),
     completedTaskIds = this.getCompletedTaskIds(completedTasks),
     uncompletedTaskIds = this.getUncompletedTaskIds(uncompletedTasks);
+
+    this.updatePageTitle(uncompletedTasks);
 
     var tasksExist = tasks.length ? (
       <div>
