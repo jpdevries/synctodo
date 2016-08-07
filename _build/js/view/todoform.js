@@ -87,10 +87,10 @@ class ToDoForm extends React.Component {
       <div>
         <hr />
         <p className="accessibly-hidden">
-          You have { tasks.length } { `thing${(tasks.length > 1 ? 's' : '')}` } to&nbsp;do.
+          You have { uncompletedTasks.length } { `thing${(uncompletedTasks.length > 1 ? 's' : '')}` } to&nbsp;do.
         </p>
         <p className="accessibly-hidden">
-          Check tasks below to archive or delete&nbsp;them.
+          Check tasks below to complete, archive, or delete&nbsp;them.
         </p>
       </div>
     ) : false;

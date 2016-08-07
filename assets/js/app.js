@@ -1865,15 +1865,15 @@
 	          'p',
 	          { className: 'accessibly-hidden' },
 	          'You have ',
-	          tasks.length,
+	          uncompletedTasks.length,
 	          ' ',
-	          'thing' + (tasks.length > 1 ? 's' : ''),
+	          'thing' + (uncompletedTasks.length > 1 ? 's' : ''),
 	          ' to do.'
 	        ),
 	        React.createElement(
 	          'p',
 	          { className: 'accessibly-hidden' },
-	          'Check tasks below to archive or delete them.'
+	          'Check tasks below to complete, archive, or delete them.'
 	        )
 	      ) : false;
 
