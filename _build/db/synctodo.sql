@@ -6,5 +6,3 @@ CREATE TABLE "tasks"(
   completed smallint NOT NULL DEFAULT '0',
   archived smallint NOT NULL DEFAULT '0'
 );
-
-SELECT * FROM "tasks" ORDER BY id;

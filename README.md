@@ -21,7 +21,7 @@ and `brew install node` to install Node.js.
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
 if you swing that way. Easy-peasy.
 
-Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) package if you haven't before. These should be done as global installs:
+Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) package if you haven't before. This should be done as a global install:
 
 ```bash
 npm install -g grunt-cli
@@ -43,7 +43,7 @@ CREATE DATABASE synctodo;
 \q
 ```
 
- Next import our example&nbsp;data. Data will be impored into a `tasks`&nbsp;table.
+ Next import our example&nbsp;data. Data will be imported into a `tasks`&nbsp;table.
 
 ```bash
 psql synctodo < _build/db/synctodo.sql
@@ -96,27 +96,32 @@ PGDATABASE=anotherdb npm run serve
  - Feature detection to only load scripts if they'll work (IE9+)
 
 ### Add New Tasks
-Homepage at `/`
+Homepage at `/`  
+Asynchronously posts to `/api/tasks`
 
 ![](http://j4p.us/1l1G471R453z/Screen%20Shot%202016-08-06%20at%201.13.46%20AM.png)
 
 ### Complete Tasks
-Synchronously posts to `/`
+Synchronously posts to `/`  
+Asynchronously posts to `/api/tasks`
 
 ![](http://j4p.us/3K3C3R1o3a1b/Screen%20Shot%202016-08-06%20at%201.14.11%20AM.png)
 
 ### Archive Tasks
-Synchronously posts to `/archive/`
+Synchronously posts to `/archive`  
+Asynchronously posts to `/api/tasks`
 
 ![](http://j4p.us/162W063Y3i0K/Screen%20Shot%202016-08-06%20at%201.14.23%20AM.png)
 
 ### Unarchive Tasks
-Synchronously posts to `/`
+Synchronously posts to `/`  
+Asynchronously posts to `/api/tasks`
 
 ![](http://j4p.us/1o0S0F3I1X0r/Screen%20Shot%202016-08-06%20at%201.14.39%20AM.png)
 
 ### Delete Tasks
-Synchronously posts to `/delete/tasks/`
+Synchronously posts to `/delete/tasks`  
+Asynchronously posts to `/api/tasks`
 
 ![](http://j4p.us/0P2C3h2n070H/Screen%20Shot%202016-08-06%20at%201.14.55%20AM.png)
 
