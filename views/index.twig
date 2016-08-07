@@ -1,54 +1,6 @@
 {% include 'header.twig' %}
 <body>
-  <main id="task-list" class="shell shell-task-list">
-    <div class="balanced">
-      <form action="{{ endpoints.UPDATE_TASKS|default('/') }}" method="post" id="todo" action="#" method="post" class="box">
-        <header class="add-item">
-          <h1 id="task-list"><a href="/" class="subtle">Todo List</a></h1>
-          <label for="new-item">Add a New Task</label>
-          <div class="new-item__bar">
-            <input required autocomplete="off" autofocus type="text" id="new-item" name="new-item" placeholder="Something to do&hellip;" />
-            <button type="submit" formaction="{{ endpoints.ADD_TASK|default('/') }}" formmethod="post">Add Task</button>
-          </div>
-        </header>
-        {% if tasks|length > 0 %}
-        <hr>
-        <p class="accessibly-hidden">
-          You have {{ tasks|length }} thing{% if tasks|length > 1 %}s{% endif %} to&nbsp;do.
-        </p>
-        <p class="accessibly-hidden">
-          Check tasks below to archive or delete&nbsp;them.
-        </p>
-        <ol class="naked">
-          {% for task in tasks %}
-          <li>
-            <label for="item_{{ task.id }}">
-              <input id="item_{{ task.id }}" name="item_{{ task.id }}" type="checkbox"{% if task.completed %} checked{% endif %}>&nbsp;{{ task.title }}
-            </label>
-          </li>
-          {% endfor %}
-        </ol>
-        <footer>
-          <div>
-            <button type="reset">Reset</button>
-            <button type="submit">Save</button>
-          </div>
-          <div class="task-bar">
-            <button type="submit" formaction="{{ endpoints.ARCHIVE_COMPLETED_TASKS|default('/archive/completed/tasks/') }}">Archive Selected Tasks</button>
-          </div>
-          <div class="task-bar">
-            <button type="submit" formaction="{{ endpoints.DELETE_TASKS|default('/delete/completed/tasks/') }}">Delete Selected Tasks</button>
-          </div>
-        </footer>
-        {% endif %}
-        {% if showArchiveLink %}
-        <p class="balanced view-all">
-          <a href="{{ endpoints.ARCHIVED_TASKS }}" class="btn">Load archived&nbsp;tasks</a>.
-        </p>
-        {% endif %}
-        </form>
-
-    </div>
-  </main>
+  {{ react }}
+  {% include 'scripts.twig' %}
 </body>
 </html>

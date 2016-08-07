@@ -4,9 +4,9 @@ Sync Todo
 Progressively Enhanced React Todo List. HTML&ndash;first, Node, Express,&nbsp;PostgreSQL.
 
 ## Preview
-Have a look at the syncronous endpoints in&nbsp;action.  
+Have a look at the synchronous and asynchronous endpoints in&nbsp;action.  
 
-![](http://j4p.us/3h1L0B2t3Q1g/todolist.gif)
+![](http://j4p.us/0x3G2i0P2l2E/todolist.gif)
 
 ## What you need
 
@@ -85,6 +85,16 @@ PGDATABASE=anotherdb npm run serve
 ```
 
 ## Features
+ - Add, Complete, Archive, and Delete&nbsp;Tasks
+ - Progressive Enhancement (`.no-js`) support
+ - Isomorphic HTML layer doubles as a data model for Redux
+ - Isomorphic server uses the same promises for asynchronous and synchronous&nbsp;requests
+ - React&nbsp;Routing
+ - React and Redux used on both server and client&nbsp;side
+ - REST API prefetches and fetches data to keep UI&nbsp;fresh
+ - Loads dependencies from CDN with local&nbsp;fallback
+ - Feature detection to only load scripts if they'll work (IE9+)
+
 ### Add New Tasks
 Homepage at `/`
 
@@ -121,3 +131,6 @@ CREATE TABLE "tasks" (
   archived smallint NOT NULL DEFAULT '0'
 );
 ```
+
+## Accessibility Proclaimer
+This component strives for WCAG 2.0 Guidelines Level AA. Please [open an issue](https://github.com/jpdevries/synctodo/issues/new) for any accessibility issue, feedback, or&nbsp;concern.

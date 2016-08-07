@@ -2,21 +2,22 @@
   title:'Deleted Tasks'
 } %}
 <body>
+  <!-- NOTE: this view could be made more isomorophic with React server-side rendering but since inputs are disabled, it is non-interactive, and this view does not exist in the .js experience felt overkill -->
   <main id="task-list" class="shell shell-task-list">
     <div class="balanced">
       <div id="todo">
         <header class="add-item">
-          <h1 id="task-list"><a href="/" class="subtle">Todo List</a></h1>
+          <h1 id="task-list"><a href="/" class="subtle">Deleted Tasks</a></h1>
         </header>
         <hr>
         <p>
-          The following completed tasks have been deleted. This is&nbsp;irreversible.
+          The following completed {% if tasks.length > 1 %}tasks have {% else %}task has {% endif %}been deleted. This is&nbsp;irreversible.
         </p>
-        <ol class="naked">
+        <ol class="naked tasks">
           {% for task in tasks %}
           <li>
             <label for="item_{{ task.id }}">
-              <input disabled id="item_{{ task.id }}" name="item_{{ task.id }}" type="checkbox" checked>&nbsp;{{ task.title }}
+              <input disabled id="item_{{ task.id }}" name="item_{{ task.id }}" type="checkbox" checked>&nbsp;<span class="title">{{ task.title }}</span>
             </label>
           </li>
           {% endfor %}

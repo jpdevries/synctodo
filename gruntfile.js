@@ -129,7 +129,7 @@ module.exports = function(grunt) {
       },
       js: {
           files: ['<%= dirs.build %><%= dirs.js %>**/*.js'],
-          tasks: ['webpack','uglify', 'growl:uglify']
+          tasks: ['webpack', 'uglify', 'growl:uglify']
       }
     },
   });
@@ -145,6 +145,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-postcss');
 
   grunt.registerTask('default',['growl:watch','watch']);
-  grunt.registerTask('build',['bower','copy','sass','postcss','growl:build']);
-  //grunt.registerTask('build',['bower','copy','webpack','uglify','sass','postcss','growl:build']);
+  grunt.registerTask('build',['bower','copy','webpack','uglify','sass','postcss','growl:build']);
 };

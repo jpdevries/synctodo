@@ -8,7 +8,8 @@ module.exports = {
     "react": "React",
     "react-dom":"ReactDOM",
     "redux":"Redux",
-    "react-redux":"ReactRedux"
+    "react-redux":"ReactRedux",
+    "react-router":"ReactRouter"
   },
   module: {
     loaders: [

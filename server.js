@@ -11,51 +11,48 @@ pg = require('pg').native,
 React = require('React'),
 createStore = require('redux').createStore,
 endpoints = require('./_build/js/model/endpoints'),
-//reducer = require('./_build/js/model/reducers'),
+reducer = require('./_build/js/model/reducers'),
 ReactDOM = require('react-dom/server'),
-//store = require('./_build/js/model/store'),
-//actions = require('./_build/js/model/actions'),
+store = require('./_build/js/model/store'),
+actions = require('./_build/js/model/actions'),
+ToDoForm = require('./_build/js/view/todoform'),
+ArchiveForm = require('./_build/js/view/archiveform'),
 app = express();
 
-
-                            /*
-                           /\ \__
-  ___   _ __    __     __  \ \ ,_\    __
- /'___\/\`'__\/'__`\ /'__`\ \ \ \/  /'__`\
-/\ \__/\ \ \//\  __//\ \L\.\_\ \ \_/\  __/
-\ \____\\ \_\\ \____\ \__/.\_\\ \__\ \____\
- \/____/ \/_/ \/____/\/__/\/_/ \/__/\/___*/
 
 app.get('/', function(req, res){
   getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
     return (tasks)
   }).then(function(archivedTasks){
+    store.dispatch(actions.fetchArchiveListSuccess(archivedTasks));
     getTasks().then(function(tasks){
+      store.dispatch(actions.fetchToDoSuccess(tasks));
       res.render('index.twig',{
-        tasks:tasks,
-        endpoints:endpoints,
-        showArchiveLink:archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
+        react: ReactDOM.renderToStaticMarkup(
+          React.createElement(ToDoForm,{
+            tasks:store.getState().tasks,
+            archivedTasks:store.getState().archivedTasks,
+            viewProps:store.getState().viewProps,
+            showResetSave:true
+          })
+        ).replace('id="new-item"','autofocus id="new-item"') // #janky https://github.com/facebook/react/issues/3066
       });
     },function(err){});
   })
 });
 
-                   /*            __
-                  /\ \          /\ \__
- __  __  _____    \_\ \     __  \ \ ,_\    __
-/\ \/\ \/\ '__`\  /'_` \  /'__`\ \ \ \/  /'__`\
-\ \ \_\ \ \ \L\ \/\ \L\ \/\ \L\.\_\ \ \_/\  __/
- \ \____/\ \ ,__/\ \___,_\ \__/.\_\\ \__\ \____\
-  \/___/  \ \ \/  \/__,_ /\/__/\/_/ \/__/\/____/
-           \ \_\
-            \/*/
+/*
+/\ \__
+___   _ __    __     __  \ \ ,_\    __
+/'___\/\`'__\/'__`\ /'__`\ \ \ \/  /'__`\
+/\ \__/\ \ \//\  __//\ \L\.\_\ \ \_/\  __/
+\ \____\\ \_\\ \____\ \__/.\_\\ \__\ \____\
+\/____/ \/_/ \/____/\/__/\/_/ \/__/\/___*/
 
 app.post('/', function(req, res){
-  console.log('POST');
   var form = new formidable.IncomingForm();
 
   form.parse(req, function(err, fields, files){
-    console.log(fields);
     var unarchiveSelected = fields.unarchiveselected == '1' ? true : false;
     new Promise(function(resolve, reject){
       if(!fields['new-item']) { // update tasks
@@ -76,22 +73,109 @@ app.post('/', function(req, res){
       }
     }).then(function(results){
       return new Promise(function(resolve, reject){
-        getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
+        try {
+          getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
+            store.dispatch(actions.fetchArchiveListSuccess(tasks));
+            resolve({
+              results:results,
+              archivedTasks:tasks
+            })
+          })
+        } catch(err) {
           resolve({
             results:results,
-            archivedTasks:tasks
+            archivedTasks:[]
           })
-        })
+        }
       })
     }).then(function(data){
       getTasks().then(function(tasks){
+        store.dispatch(actions.fetchToDoSuccess(tasks));
         res.render('index.twig',{
           tasks:tasks,
           endpoints:endpoints,
-          showArchiveLink:data.archivedTasks.length ? true : false // only show link to archives if there will be stuff to see there
+          react: ReactDOM.renderToStaticMarkup(
+            React.createElement(ToDoForm,{
+              tasks:store.getState().tasks,
+              archivedTasks:store.getState().archivedTasks,
+              viewProps:store.getState().viewProps,
+              showResetSave:true
+            })
+          ).replace('id="new-item"','autofocus id="new-item"') // #janky https://github.com/facebook/react/issues/3066
         });
       },function(err){});
     },function(err){});
+  });
+});
+
+ /*____  ____    ______
+/\  _  \/\  _`\ /\__  _\
+\ \ \L\ \ \ \L\ \/_/\ \/
+ \ \  __ \ \ ,__/  \ \ \
+  \ \ \/\ \ \ \/    \_\ \__
+   \ \_\ \_\ \_\    /\_____\
+    \/_/\/_/\/_/    \/____*/
+
+app.get(endpoints.API_ARCHIVE, function(req, res){
+  getTasks('WHERE archived = 1').then(function(tasks){
+    res.json({
+      tasks:tasks
+    });
+  });
+});
+
+app.get(endpoints.API_TODOS, function(req, res){
+  getTasks().then(function(tasks){
+    res.json({
+      tasks:tasks
+    });
+  });
+});
+
+app.put(endpoints.API_ADD_TASK, function(req, res){
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function (err, fields, files) {
+
+    addTask(fields['new-item'],false).then(function(tasks){
+      res.json({
+        success:true,
+        task:tasks[0]
+      });
+    });
+  });
+});
+
+app.post(endpoints.API_TASKS, function(req, res){
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function (err, fields, files) {
+
+    switch(fields.action) {
+      case 'complete':
+      updateTaskCompletedStatus(fields.tasks,false,false,fields.completed).then(function(results){
+        res.json({
+          results:results
+        });
+      });
+      break;
+
+      case 'archive':
+      archiveTasks(fields.tasks).then(function(tasks){
+        res.json({
+          tasks:tasks
+        })
+      });
+      break;
+
+      case 'unarchive':
+      archiveTasks(fields.tasks, false, true).then(function(tasks){
+        res.json({
+          tasks:tasks
+        })
+      });
+      break;
+    }
   });
 });
 
@@ -117,6 +201,19 @@ app.post(endpoints.DELETE_TASKS, function(req, res){
   });
 });
 
+app.delete(endpoints.API_DELETE_TASKS, function(req, res){
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files){
+    var tasks = fields.tasks;
+    deleteTasks(tasks).then(function(tasks){
+      res.json({
+        tasks:tasks
+      });
+    },function(err){});
+  });
+});
+
                      /*
                     /\ \      __
    __     _ __   ___\ \ \___ /\_\  __  __     __
@@ -131,11 +228,19 @@ app.post(endpoints.ARCHIVE_COMPLETED_TASKS, function(req, res){
   form.parse(req, function(err, fields, files){
     var ids = getCompletedTaskIds(fields);
     archiveTasks(ids).then(function(tasks){
+      store.dispatch(actions.fetchArchiveListSuccess(tasks));
       res.render('archivedtasks.twig',{
         tasks:tasks,
         endpoints:endpoints,
         viewAllArchivedTasks:true,
-        showReset:false
+        showReset:false,
+        react: ReactDOM.renderToStaticMarkup(
+          React.createElement(ArchiveForm,{
+            tasks:store.getState().archivedTasks,
+            viewProps:store.getState().viewProps,
+            showResetSave:true
+          })
+        )
       });
     },function(err){});
   });
@@ -143,10 +248,18 @@ app.post(endpoints.ARCHIVE_COMPLETED_TASKS, function(req, res){
 
 app.get(endpoints.ARCHIVED_TASKS, function(req, res){
   getTasks('WHERE archived = 1').then(function(tasks){
+    store.dispatch(actions.fetchArchiveListSuccess(tasks));
     res.render('archivedtasks.twig',{
       tasks:tasks,
       endpoints:endpoints,
-      reset:'Select All'
+      reset:'Select All',
+      react: ReactDOM.renderToStaticMarkup(
+        React.createElement(ArchiveForm,{
+          tasks:store.getState().archivedTasks,
+          viewProps:store.getState().viewProps,
+          showResetSave:true
+        })
+      )
     });
   },function(err){});
 });
@@ -175,7 +288,6 @@ function getTasks(where = 'WHERE archived = 0') {
 
       // execute a query on our database
       client.query(`SELECT * FROM "tasks" ${where} ORDER BY id;`, function (err, result) {
-        //console.log(result);
         if (err) reject(err);
 
         // disconnect the client
@@ -215,7 +327,6 @@ function addTask(title, completed) {
 
       // execute a query on our database
       client.query(query, [title,completed], function (err, result) {
-        //console.log(result);
         if (err) reject(err);
 
         // disconnect the client
@@ -234,11 +345,12 @@ function addTask(title, completed) {
  * @param {Array} ids - ids of tasks to mark as completed.
  * @param {boolean} uncompleteMissing - If true, marks any tasks not present in ids as uncomplete.
  */
-function updateTaskCompletedStatus(ids,uncompleteMissing = false) {
-  var completed = (ids.length) ? 1 : 0;
+function updateTaskCompletedStatus(ids,uncompleteMissing = false,returnAll = true,completed = true) {
+  var completed = (ids.length && completed) ? 1 : 0;
   uncompleteMissing = (ids.length) ? uncompleteMissing : false;
   var where = (ids.length) ? ` WHERE id IN (${ids})` : '';
   ids = ids.join(',');
+  returnAll = (returnAll) ? 'SELECT * FROM "tasks" ORDER BY id;' : '';
 
   return new Promise(function(resolve, reject){
     var client = new pg.Client();
@@ -261,12 +373,11 @@ function updateTaskCompletedStatus(ids,uncompleteMissing = false) {
       )${uncomplete}
       SELECT * FROM "update_task";
 
-      SELECT * FROM "tasks" ORDER BY id;
+      ${returnAll}
       `;
 
       // execute a query on our database
       client.query(query, function (err, result) {
-        //console.log(result);
         if (err) reject(err);
 
         // disconnect the client
@@ -316,7 +427,6 @@ function archiveTasks(ids,unarchiveMissing = false, forceUnarchive = false) {
 
       // execute a query on our database
       client.query(query, function (err, result) {
-        //console.log(result);
         if (err) reject(err);
 
         // disconnect the client
@@ -350,7 +460,6 @@ function deleteTasks(ids) {
 
       // execute a query on our database
       client.query(query, function (err, result) {
-        //console.log(result);
         if (err) reject(err);
 
         // disconnect the client

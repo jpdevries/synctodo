@@ -6,7 +6,7 @@ body {
   background:rgb(245,245,245);
   margin:0;
   padding:.5em;
-
+  color:rebeccapurple;
   @include media($gtMobile) {
     padding:2em;
   }

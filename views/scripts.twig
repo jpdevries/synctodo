@@ -1,0 +1,27 @@
+<script>
+  var doEnhancments = document.addEventListener ? true : false; // if React won't work (IE8-) don't even bother loading the script (they may brick the page in IE8-)
+  var useCDN = true;
+</script>
+
+<!-- only load polyfills if we need them -->
+<script defer>if(doEnhancments && !Array.prototype.includes) document.write('<script src="assets/js/vendor/polyfills/arrayincludes.js"><\/script>');</script>
+<script defer>if(doEnhancments && ("performance" in window == false)) document.write('<script src="assets/js/vendor/polyfills/performance.now.js"><\/script>');</script>
+
+<!-- NOTE: change these to load the .min in production. They are not only smaller filesize but have wildly different performance!!! -->
+<script defer>if(doEnhancments && useCDN) document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"><\/script>');</script>
+<script defer>if(doEnhancments) try { Redux } catch (e) { document.write('<script src="assets/js/vendor/redux.js"><\/script>') }</script>
+
+<script defer>if(doEnhancments && useCDN) document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"><\/script>');</script>
+<script defer>if(doEnhancments) try { React } catch (e) { document.write('<script src="assets/js/vendor/react.js"><\/script>') }</script>
+
+<script defer>if(doEnhancments && useCDN) document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"><\/script>');</script>
+<script defer>if(doEnhancments) try { ReactDOM } catch (e) { document.write('<script src="assets/js/vendor/react-dom.js"><\/script>') }</script>
+
+<script defer>if(doEnhancments && useCDN) document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"><\/script>');</script>
+<script defer>if(doEnhancments)try { ReactRedux } catch (e) { document.write('<script src="assets/js/vendor/react-redux.js"><\/script>') }</script>
+
+<script defer>if(doEnhancments && useCDN) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.6.1/ReactRouter.js"><\/script>');</script>
+<script defer>if(doEnhancments)try { ReactRouter } catch (e) { document.write('<script src="assets/js/vendor/react-router.js"><\/script>') }</script>
+
+<!-- load app.min.js in production and make sure it is GZIPed -->
+<script defer>if(doEnhancments) document.write('<script src="assets/js/app.js?nc=7"><\/script>');</script>
