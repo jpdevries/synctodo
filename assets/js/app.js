@@ -1983,7 +1983,7 @@
 	                React.createElement(
 	                  'a',
 	                  { href: '/', className: 'subtle' },
-	                  'Todo List'
+	                  'To Do List'
 	                )
 	              ),
 	              React.createElement(

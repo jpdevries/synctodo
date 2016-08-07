@@ -1,7 +1,7 @@
-Sync Todo
+Sync To&ndash;Do
 ========
 
-Progressively Enhanced React Todo List. HTML&ndash;first, Node, Express,&nbsp;PostgreSQL.
+Progressively Enhanced React To&nbsp;Do List. HTML&ndash;first, Node, Express,&nbsp;PostgreSQL.
 
 ## Preview
 Have a look at the synchronous and asynchronous endpoints in&nbsp;action.  

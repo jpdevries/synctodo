@@ -169,7 +169,7 @@ class ToDoForm extends React.Component {
             }
           }}>
             <header className="add-item">
-              <h1 id="task-list"><a href="/" className="subtle">Todo List</a></h1>
+              <h1 id="task-list"><a href="/" className="subtle">To&nbsp;Do List</a></h1>
               <label htmlFor="new-item">Add a New Task</label>
               <div className="new-item__bar">
                 <input ref="newItem" value={state.newTask} autoFocus autoComplete="off" type="text" id="new-item" name="new-item" placeholder="Something to do…" onChange={(event) => {
