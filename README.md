@@ -1,4 +1,4 @@
-Sync To&ndash;Do
+Sync To Do
 ========
 
 Progressively Enhanced React To&nbsp;Do List. HTML&ndash;first, Node, Express,&nbsp;PostgreSQL.
