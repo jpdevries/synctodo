@@ -8,6 +8,9 @@
     "serve": "PGDATABASE=synctodo nodemon --watch ./ --watch ./views -e js,twig server.js",
     "start": "PGDATABASE=sleepy-anchorage-68739 node server.js"
   },
+  "engines": {
+    "node": "6.5.0"
+  },
   "author": "JP de Vries",
   "license": "MIT",
   "devDependencies": {
