@@ -281,7 +281,7 @@ app.get(endpoints.ARCHIVED_TASKS, function(req, res){
 */
 function getTasks(where = 'WHERE archived = 0') {
   return new Promise(function(resolve, reject){
-    var client = new pg.Client();
+    var client = new pg.Client(process.env.DATABASE_URL);
 
     // connect to our database
     client.connect(function (err) {
@@ -311,7 +311,7 @@ function getTasks(where = 'WHERE archived = 0') {
 function addTask(title, completed) {
   completed = (completed) ? 1 : 0;
   return new Promise(function(resolve, reject){
-    var client = new pg.Client();
+    var client = new pg.Client(process.env.DATABASE_URL);
 
     // connect to our database
     client.connect(function (err) {
@@ -354,7 +354,7 @@ function updateTaskCompletedStatus(ids,uncompleteMissing = false,returnAll = tru
   returnAll = (returnAll) ? 'SELECT * FROM "tasks" ORDER BY id;' : '';
 
   return new Promise(function(resolve, reject){
-    var client = new pg.Client();
+    var client = new pg.Client(process.env.DATABASE_URL);
 
     // connect to our database
     client.connect(function (err) {
@@ -405,7 +405,7 @@ function archiveTasks(ids,unarchiveMissing = false, forceUnarchive = false) {
   ids = ids.join(',');
 
   return new Promise(function(resolve, reject){
-    var client = new pg.Client();
+    var client = new pg.Client(process.env.DATABASE_URL);
 
     // connect to our database
     client.connect(function (err) {
@@ -445,7 +445,7 @@ function deleteTasks(ids) {
   ids = ids.join(',');
 
   return new Promise(function(resolve, reject){
-    var client = new pg.Client();
+    var client = new pg.Client(process.env.DATABASE_URL);
 
     // connect to our database
     client.connect(function (err) {
