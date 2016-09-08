@@ -4,7 +4,7 @@ Sync To Do
 Progressively Enhanced React To&nbsp;Do List. HTML&ndash;first, Node, Express,&nbsp;PostgreSQL.
 
 ## Preview
-Have a look at the synchronous and asynchronous endpoints in&nbsp;action.  
+Have a look at the synchronous and asynchronous endpoints in&nbsp;action. [Run the live demo at our Heroku Dino](https://sleepy-anchorage-68739.herokuapp.com).
 
 ![](http://j4p.us/3L3k0i450J3k/todolist.gif)
 
