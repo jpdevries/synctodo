@@ -19,6 +19,7 @@ ToDoForm = require('./_build/js/view/todoform'),
 ArchiveForm = require('./_build/js/view/archiveform'),
 app = express();
 
+pg.defaults.ssl = true;
 
 app.get('/', function(req, res){
   getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks
