@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "PGDATABASE=synctodo nodemon --watch ./ --watch ./views -e js,twig server.js"
+    "serve": "PGDATABASE=synctodo nodemon --watch ./ --watch ./views -e js,twig server.js",
+    "start": "PGDATABASE=sleepy-anchorage-68739 node server.js"
   },
   "author": "JP de Vries",
   "license": "MIT",
