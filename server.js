@@ -17,9 +17,28 @@ store = require('./_build/js/model/store'),
 actions = require('./_build/js/model/actions'),
 ToDoForm = require('./_build/js/view/todoform'),
 ArchiveForm = require('./_build/js/view/archiveform'),
-app = express();
+app = express(),
+compression = require('compression'),
+minifyHTML = require('express-minify-html'),
+isProd = (process.env.NODE_ENV == 'production') ? true : false;
 
 pg.defaults.ssl = true;
+
+if(isProd) {
+  app.use(minifyHTML({
+    override: true,
+    htmlMinifier: {
+      removeComments: true,
+      collapseWhitespace: true,
+      collapseBooleanAttributes: true,
+      removeAttributeQuotes: false,
+      removeEmptyAttributes: true,
+      minifyJS: true
+    }
+  }));
+
+  app.use(compression({ level: 9, threshold: 0 }));
+}
 
 app.get('/', function(req, res){
   getTasks('WHERE archived = 1').then(function(tasks){ // check if there are any archived tasks

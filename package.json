@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "PGDATABASE=synctodo nodemon --watch ./ --watch ./views -e js,twig server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "herokuforce": "git push heroku master:master --force"
   },
   "engines": {
     "node": "6.5.0"
@@ -36,7 +37,9 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "babel-register": "^6.11.6",
+    "compression": "^1.6.2",
     "express": "^4.14.0",
+    "express-minify-html": "^0.11.2",
     "formidable": "^1.0.17",
     "nodemon": "^1.10.0",
     "pg": "^6.0.3",
