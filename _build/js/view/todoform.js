@@ -141,7 +141,7 @@ class ToDoForm extends React.Component {
     ) : false;
 
     return (
-      <main id="task-list" className="shell shell-task-list">
+      <div>
 
         <div className="balanced">
           <form action="/" method="post" id="todo" className="box" onSubmit={(event) => {
@@ -192,7 +192,7 @@ class ToDoForm extends React.Component {
             {loadArchivedTasks}
           </form>
         </div>
-      </main>
+      </div>
     );
   }
 }

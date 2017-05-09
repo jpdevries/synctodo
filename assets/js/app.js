@@ -1903,8 +1903,8 @@
 	      ) : false;
 
 	      return React.createElement(
-	        'main',
-	        { id: 'task-list', className: 'shell shell-task-list' },
+	        'div',
+	        null,
 	        React.createElement(
 	          'div',
 	          { className: 'balanced' },

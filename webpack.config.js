@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   entry: './_build/js/main.js',
   output: { path: './assets/js/', filename: 'app.js' },
-  externals: {
+  externals: { // we'll load this stuff from a CDN and fallback to a local script file. not bundling so as to leverage the browser cache
     "react": "React",
     "react-dom":"ReactDOM",
     "redux":"Redux",
